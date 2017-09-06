@@ -1,0 +1,24 @@
+﻿body {
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.fieldLabel {
+    text-align: right;
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+.tableRow {
+    border-width: 100px;
+    border-color: transparent;
+}
+
+.center-pills { 
+    display: flex;
+    justify-content: center;
+    column-count: 4;
+}
