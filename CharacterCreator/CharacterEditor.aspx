@@ -1,8 +1,8 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CharacterCreator.aspx.cs" Inherits="CharacterCreator.CharacterCreator" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CharacterEditor.aspx.cs" Inherits="CharacterCreator.CharacterCreator" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head runat="server">
-        <title>Character Creator</title>
+        <title>Character Creator - Editor Page</title>
         <link href="~/content/CreatorStyle.css" type="text/css" media="screen" rel="stylesheet" />
         <link href="~/content/bootstrap.css" type="text/css" media="screen"  rel="stylesheet" />
         <script src="Scripts/jquery-1.10.2.js"></script>
@@ -13,7 +13,7 @@
     <body>
         <form id="form1" class="form-horizontal row" runat="server">
             <div id="IDShortcuts" hidden="hidden">
-                <asp:Textbox ID="CharIDTB"      runat="server" />
+                <asp:Textbox ID="CharIDTB"      runat="server" Text="-1" />
                 <asp:Textbox ID="CommonIDTB"    runat="server" />
                 <asp:Textbox ID="CampIDTB"      runat="server" />
                 <asp:Textbox ID="StatTypeIDTB"  runat="server" />
@@ -49,7 +49,7 @@
 
 			    <div class="tab-content clearfix">
 			        <div class="tab-pane active" id="1a">                        
-                        <asp:Table ID="startTable" runat="server">
+                        <asp:Table ID="mainInfoTable" runat="server">
                             <asp:TableRow runat="server" CssClass="tableRow mandatoryField" BorderWidth="10px">
                                 <asp:TableCell runat="server" CssClass="fieldLabel">
                                     <asp:Label ID="NameLB" runat="server" Text="Character Name:" />
@@ -99,15 +99,6 @@
                                     <asp:TextBox ID="DescTB" runat="server" TextMode="multiline" Columns="20" Rows="5" />
                                 </asp:TableCell>
                             </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Button ID="startBuildBtn"      runat="server" Text="Create"    />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:Button ID="startResetBtn"      runat="server" Text="Reset"     />
-                                    <asp:Button ID="startRefreshBtn"    runat="server" Text="Refresh"   />
-                                </asp:TableCell>
-                            </asp:TableRow>
                         </asp:Table>
 				    </div>
 
@@ -151,15 +142,6 @@
                                 </asp:TableCell>
                                 <asp:TableCell runat="server">
                                     <asp:TextBox ID="Camp_ExtraTB" runat="server" TextMode="multiline" Columns="20" Rows="5" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Button ID="SaveBtn"      runat="server" Text="Save"    />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:Button ID="LoadBtn"      runat="server" Text="Load"     />
-                                    <asp:Button ID="DeleteBtn"    runat="server" Text="Delete"   />
                                 </asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>

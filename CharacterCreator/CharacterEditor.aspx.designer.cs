@@ -58,13 +58,13 @@ namespace CharacterCreator {
         protected global::System.Web.UI.WebControls.TextBox StatTypeIDTB;
         
         /// <summary>
-        /// startTable control.
+        /// mainInfoTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Table startTable;
+        protected global::System.Web.UI.WebControls.Table mainInfoTable;
         
         /// <summary>
         /// NameLB control.
@@ -175,33 +175,6 @@ namespace CharacterCreator {
         protected global::System.Web.UI.WebControls.TextBox DescTB;
         
         /// <summary>
-        /// startBuildBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button startBuildBtn;
-        
-        /// <summary>
-        /// startResetBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button startResetBtn;
-        
-        /// <summary>
-        /// startRefreshBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button startRefreshBtn;
-        
-        /// <summary>
         /// CampaignTable control.
         /// </summary>
         /// <remarks>
@@ -299,33 +272,6 @@ namespace CharacterCreator {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox Camp_ExtraTB;
-        
-        /// <summary>
-        /// SaveBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SaveBtn;
-        
-        /// <summary>
-        /// LoadBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button LoadBtn;
-        
-        /// <summary>
-        /// DeleteBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DeleteBtn;
         
         /// <summary>
         /// CommonInfoTable control.
@@ -452,5 +398,6 @@ namespace CharacterCreator {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Table FeatTable;
+        
     }
 }
