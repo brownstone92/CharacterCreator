@@ -12,7 +12,7 @@
     <body>
         <form id="form1" runat="server">
         <div>   
-            <asp:HiddenField ID="Character" Value="-1" runat="server" />             
+            <asp:HiddenField ID="CharacterID" Value="-1" runat="server" />             
             <asp:Table ID="loadCharTable" runat="server">
                 <asp:TableRow runat="server">
                     <asp:TableCell runat="server">
@@ -27,9 +27,10 @@
                 </asp:TableRow>
                 <asp:TableRow runat="server">
                     <asp:TableCell runat="server">
-                        <asp:Button ID="EditBtn" Text="Edit" runat="server" />
+                        <asp:LinkButton ID="RefreshBtn" OnClientClick="Response.Redirect(Request.RawUrl);" ToolTip="Refresh List" runat="server">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </asp:LinkButton>
                         <asp:Button ID="CopyBtn" Text="Duplicate" runat="server" />
-                        <asp:Button ID="DeleteBtn" Text="Delete" runat="server" />
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>            
@@ -78,6 +79,46 @@
                 </asp:TableRow>
                 <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
                     <asp:TableCell runat="server" CssClass="fieldLabel">
+                        <asp:Label ID="LevelLB" runat="server" Text="Level:" />
+                    </asp:TableCell>
+                    <asp:TableCell runat="server">
+                        <asp:DropDownList ID="LevelDD" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                    <asp:TableCell runat="server" CssClass="fieldLabel">
+                        <asp:Label ID="RaceLB" runat="server" Text="Race:" />
+                    </asp:TableCell>
+                    <asp:TableCell runat="server">
+                        <asp:DropDownList ID="RaceDD" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                    <asp:TableCell runat="server" CssClass="fieldLabel">
+                        <asp:Label ID="ClassLB" runat="server" Text="Class:" />
+                    </asp:TableCell>
+                    <asp:TableCell runat="server">
+                        <asp:DropDownList ID="ClassDD" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                    <asp:TableCell runat="server" CssClass="fieldLabel">
+                        <asp:Label ID="AlignLB" runat="server" Text="Alignment:" />
+                    </asp:TableCell>
+                    <asp:TableCell runat="server">
+                        <asp:DropDownList ID="AlignDD" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                    <asp:TableCell runat="server" CssClass="fieldLabel">
+                        <asp:Label ID="SexLB" runat="server" Text="Sex:" />
+                    </asp:TableCell>
+                    <asp:TableCell runat="server">
+                        <asp:TextBox ID="SexTB" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                    <asp:TableCell runat="server" CssClass="fieldLabel">
                         <asp:Label ID="DescLB" runat="server" Text="Description/Backstory:" />
                     </asp:TableCell>
                     <asp:TableCell runat="server">
@@ -86,11 +127,9 @@
                 </asp:TableRow>
                 <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px" HorizontalAlign="Center">
                     <asp:TableCell runat="server" HorizontalAlign="Center" ColumnSpan="2">
-                        <asp:Button ID="NewCharBtn" runat="server" Text="Create" />
-                        <asp:LinkButton ID="RefreshBtn" OnClientClick="Response.Redirect(Request.RawUrl);" ToolTip="Refresh List" runat="server">
-                            <i class="glyphicon glyphicon-refresh"></i>
-                        </asp:LinkButton>
-                        <asp:Button ID="ClearBtn" runat="server" Text="Clear" />                    
+                        <asp:Button ID="EditBtn" runat="server" Text="Create" />
+                        &nbsp;
+                        <asp:Button ID="ClearBtn" runat="server" Text="Clear" />                   
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>

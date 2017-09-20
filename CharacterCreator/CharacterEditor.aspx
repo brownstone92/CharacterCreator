@@ -13,13 +13,32 @@
     <body>
         <form id="form1" class="form-horizontal row" runat="server">
             <div id="IDShortcuts" hidden="hidden">
-                <asp:Textbox ID="CharIDTB"      runat="server" Text="-1" />
-                <asp:Textbox ID="CommonIDTB"    runat="server" />
-                <asp:Textbox ID="CampIDTB"      runat="server" />
-                <asp:Textbox ID="StatTypeIDTB"  runat="server" />
+                <asp:HiddenField ID="CharacterID"   Value="-1"  runat="server" />
+                <asp:HiddenField ID="Changes"       Value=""    runat="server" />
             </div>
+            
+            <script>
+                $(document).ready(function () { 
+                    $("#form1 :input").change(function () {
+                        alert("HEY!");
+
+                        // do whatever you need to do when something's changed.
+                        // perhaps set up an onExit function on the window
+                        document.getElementById("Changes").value = "Yup";
+
+                        return false;
+                    });
+                });
+            </script>
 
             <div class="container">
+                <asp:LinkButton ID="SaveBtn" ToolTip="Save Changes" runat="server">
+                    <i class="glyphicon glyphicon-floppy-disk"></i>
+                </asp:LinkButton>
+                <asp:LinkButton ID="CancelBtn" ToolTip="Cancel Changes" runat="server">
+                    <i class="glyphicon glyphicon-floppy-remove"></i>
+                </asp:LinkButton>
+
                 <ul id="PrimaryMenus" class="nav nav-pills center-pills">
 			        <li class="active">
                         <a  href="#1a" data-toggle="tab">Start Menu</a>
@@ -27,11 +46,8 @@
 			        <li>
                         <a href="#2a" data-toggle="tab">Campaign Details</a>
 			        </li>
-			        <li>
-                        <a href="#3a" data-toggle="tab">Common Info</a>
-			        </li>
   		            <li>
-                      <a href="#4a" data-toggle="tab">Character Sheet</a>
+                      <a href="#3a" data-toggle="tab">Character Sheet</a>
 			        </li>
                     <li>
                         <a  href="#1b" data-toggle="tab">Ability Scores</a>
@@ -90,6 +106,46 @@
                                 <asp:TableCell runat="server">
                                     <asp:DropDownList ID="CampaignDD" runat="server" />
                                 </asp:TableCell>
+                            </asp:TableRow>                            
+                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                                <asp:TableCell runat="server" CssClass="fieldLabel">
+                                    <asp:Label ID="LevelLB" runat="server" Text="Level:" />
+                                </asp:TableCell>
+                                <asp:TableCell runat="server">
+                                    <asp:DropDownList ID="LevelDD" runat="server" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                                <asp:TableCell runat="server" CssClass="fieldLabel">
+                                    <asp:Label ID="RaceLB" runat="server" Text="Race:" />
+                                </asp:TableCell>
+                                <asp:TableCell runat="server">
+                                    <asp:DropDownList ID="RaceDD" runat="server" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                                <asp:TableCell runat="server" CssClass="fieldLabel">
+                                    <asp:Label ID="ClassLB" runat="server" Text="Class:" />
+                                </asp:TableCell>
+                                <asp:TableCell runat="server">
+                                    <asp:DropDownList ID="ClassDD" runat="server" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                                <asp:TableCell runat="server" CssClass="fieldLabel">
+                                    <asp:Label ID="AlignLB" runat="server" Text="Alignment:" />
+                                </asp:TableCell>
+                                <asp:TableCell runat="server">
+                                    <asp:DropDownList ID="AlignDD" runat="server" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
+                                <asp:TableCell runat="server" CssClass="fieldLabel">
+                                    <asp:Label ID="SexLB" runat="server" Text="Sex:" />
+                                </asp:TableCell>
+                                <asp:TableCell runat="server">
+                                    <asp:TextBox ID="SexTB" runat="server" />
+                                </asp:TableCell>
                             </asp:TableRow>
                             <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
                                 <asp:TableCell runat="server" CssClass="fieldLabel">
@@ -146,53 +202,8 @@
                             </asp:TableRow>
                         </asp:Table>
 				    </div>
-
-                    <div class="tab-pane" id="3a">            
-                        <asp:Table ID="CommonInfoTable" runat="server">
-                            <asp:TableRow runat="server" CssClass="tableRow mandatoryField" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Label ID="Label5" runat="server" Text="Character Sex:" />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:TextBox ID="Common_SexTB" runat="server" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Label ID="Label7" runat="server" Text="Character Level:" />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:TextBox ID="Common_LevelTB" runat="server" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Label ID="Label6" runat="server" Text="Character Race:" />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:DropDownList ID="Common_RaceDD" runat="server" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">
-                                    <asp:Label ID="Label10" runat="server" Text="Character Class:" />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:DropDownList ID="Common_ClassDD" runat="server" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                            <asp:TableRow runat="server" CssClass="tableRow mandatoryField" BorderWidth="10px">
-                                <asp:TableCell runat="server" CssClass="fieldLabel">                
-                                    <asp:Label ID="Label8" runat="server" Text="Character Alignment:" />
-                                </asp:TableCell>
-                                <asp:TableCell runat="server">
-                                    <asp:DropDownList ID="Common_AlignDD" runat="server" />
-                                </asp:TableCell>
-                            </asp:TableRow>
-                        </asp:Table>
-				    </div>
-
-                    <div class="tab-pane" id="4a">
+                    
+                    <div class="tab-pane" id="3a">
                         <h3 align="center">Coming Soon...</h3>
 				    </div>
 

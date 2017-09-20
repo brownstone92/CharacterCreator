@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Data.SQLite;
 
@@ -11,12 +7,6 @@ namespace CharacterCreator
 {
     public partial class CharacterCreator : Page
     {
-        public object CharacterID
-        {
-            get { return ViewState["ID"]; }
-            set { ViewState["ID"] = value; }
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -24,57 +14,25 @@ namespace CharacterCreator
 
         protected void Page_Init(object sender, EventArgs e)
         {
-            PopulateMenu();
-
-            CharTypeRBList.SelectedIndexChanged += new EventHandler(CharTypeChanged);
-            CharTypeRBList.AutoPostBack = true;
-
-            RPGDD.SelectedIndexChanged += new EventHandler(RPGChanged);
-            RPGDD.AutoPostBack = true;
-
             try
             {
                 string rawId = Request.QueryString["id"];
-                CharacterID = int.Parse(rawId);
+                CharacterID.Value = rawId;
 
-                if ((int)CharacterID >= 0)
-                {
-                    CharIDTB.Text = CharacterID.ToString();
+                PopulateMenu();
+                PopulateFields();
 
-                    using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
-                    {
-                        conn.Open();
+                CharTypeRBList.SelectedIndexChanged += new EventHandler(CharTypeChanged);
+                CharTypeRBList.AutoPostBack = true;
 
-                        using (SQLiteCommand query = conn.CreateCommand())
-                        {
-                            query.CommandText = "SELECT * FROM Character WHERE Character_ID = " + CharacterID.ToString() + ";";
+                RPGDD.SelectedIndexChanged += new EventHandler(RPGChanged);
+                RPGDD.AutoPostBack = true;
 
-                            using (SQLiteDataReader reader = query.ExecuteReader())
-                            {
-                                reader.Read();
+                CampaignDD.SelectedIndexChanged += new EventHandler(CampaignChanged);
+                CampaignDD.AutoPostBack = true;
 
-                                NameTB.Text = reader["Character_Name"].ToString();
-                                DescTB.Text += reader["Character_Desc"].ToString();
-                                PlayerTB.Text = reader["Player_Name"].ToString();
-                                
-                                CharTypeRBList.SelectedValue = reader["CharacterType_ID"].ToString();
-                                CharTypeChanged();
-
-                                RPGDD.SelectedValue = reader["RPG_ID"].ToString();
-                                RPGChanged();
-                                
-                                if (reader["Campaign_ID"].ToString() != null)
-                                {
-                                    CampaignDD.SelectedValue = reader["Campaign_ID"].ToString();
-                                }
-                            }
-
-                            query.Dispose();
-                        }
-
-                        conn.Close();
-                    }
-                }
+                SaveBtn.Command += new CommandEventHandler(SaveChanges);
+                CancelBtn.Command += new CommandEventHandler(CancelChanges);
             }
             catch (Exception err)
             {
@@ -92,7 +50,8 @@ namespace CharacterCreator
             CharTypeRBList.Items.Clear();
             RPGDD.Items.Clear();
 
-            RPGDD.Items.Add(new ListItem(""));
+            RPGDD.Items.Add(new ListItem("", "0"));
+            RPGChanged();
 
             try
             {
@@ -108,11 +67,11 @@ namespace CharacterCreator
                         {
                             while (CharTypeRead.Read())
                             {
-                                CharTypeRBList.Items.Add(new ListItem(CharTypeRead["CharacterType_Name"].ToString(), CharTypeRead["CharacterType_ID"].ToString()));
+                                CharTypeRBList.Items.Add(new ListItem(CharTypeRead["Char_Type_Name"].ToString(), CharTypeRead["Char_Type_ID"].ToString()));
                             }
                         }
 
-                        query.CommandText = "SELECT * FROM RPG;";
+                        query.CommandText = "SELECT * FROM RPG ORDER BY RPG_Name;";
 
                         using (SQLiteDataReader RPGRead = query.ExecuteReader())
                         {
@@ -121,13 +80,80 @@ namespace CharacterCreator
                                 RPGDD.Items.Add(new ListItem(RPGRead["RPG_Name"].ToString(), RPGRead["RPG_ID"].ToString()));
                             }
                         }
-
-                        RPGChanged();
-
+                        
                         query.Dispose();
                     }
 
                     conn.Close();
+                }
+            }
+            catch (Exception err)
+            {
+                DescTB.Text += err.ToString();
+            }
+        }
+
+        public void PopulateFields()
+        {
+            try
+            {
+                if (int.Parse(CharacterID.Value) >= 0)
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
+                    {
+                        conn.Open();
+
+                        using (SQLiteCommand query = conn.CreateCommand())
+                        {
+                            query.CommandText = "SELECT * FROM Character JOIN Campaign WHERE Character.Campaign_ID = Campaign.Campaign_ID AND Character_ID = " + CharacterID.Value + ";";
+
+                            using (SQLiteDataReader reader = query.ExecuteReader())
+                            {
+                                reader.Read();
+
+                                NameTB.Text = reader["Character_Name"].ToString();
+                                DescTB.Text = reader["Character_Desc"].ToString();
+                                PlayerTB.Text = reader["Character_Player"].ToString();
+
+                                CharTypeRBList.SelectedValue = reader["Char_Type_ID"].ToString();
+                                CharTypeChanged();
+
+                                RPGDD.SelectedValue = reader["RPG_ID"].ToString();
+                                RPGChanged();
+
+                                if (reader["Character_Level"].ToString() != "")
+                                {
+                                    LevelDD.SelectedValue = reader["Character_Level"].ToString();
+                                }
+
+                                if (reader["Char_Race_ID"].ToString() != "")
+                                {
+                                    RaceDD.SelectedValue = reader["Char_Race_ID"].ToString();
+                                }
+
+                                if (reader["Char_Class_ID"].ToString() != "")
+                                {
+                                    ClassDD.SelectedValue = reader["Char_Class_ID"].ToString();
+                                }
+
+                                if (reader["Char_Align_ID"].ToString() != "")
+                                {
+                                    AlignDD.SelectedValue = reader["Char_Align_ID"].ToString();
+                                }
+
+                                CampaignDD.SelectedValue = reader["Campaign_ID"].ToString();
+                                CampaignChanged();
+                            }
+
+                            query.Dispose();
+                        }
+
+                        conn.Close();
+                    }
+                }
+                else
+                {
+
                 }
             }
             catch (Exception err)
@@ -162,8 +188,22 @@ namespace CharacterCreator
         public void RPGChanged()
         {
             CampaignDD.Items.Clear();
-            CampaignDD.Items.Add("New Campaign");
-            
+            LevelDD.Items.Clear();
+            RaceDD.Items.Clear();
+            ClassDD.Items.Clear();
+            AlignDD.Items.Clear();
+
+            CampaignDD.Items.Add(new ListItem("New Campaign", "0"));
+            LevelDD.Items.Add(new ListItem("", "0"));
+            RaceDD.Items.Add(new ListItem("", "0"));
+            ClassDD.Items.Add(new ListItem("", "0"));
+            AlignDD.Items.Add(new ListItem("", "0"));
+
+            LevelDD.Enabled = true;
+            RaceDD.Enabled = true;
+            ClassDD.Enabled = true;
+            AlignDD.Enabled = true;
+
             if (RPGDD.SelectedIndex > 0)
             {
                 ListItem separator = new ListItem("------------");
@@ -178,13 +218,93 @@ namespace CharacterCreator
 
                         using (SQLiteCommand query = conn.CreateCommand())
                         {
-                            query.CommandText = "SELECT * FROM Campaign WHERE RPG_ID = " + RPGDD.SelectedValue + ";";
+                            query.CommandText = "SELECT * FROM Campaign WHERE RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Campaign_Name;";
 
                             using (SQLiteDataReader CampaignListing = query.ExecuteReader())
                             {
                                 while (CampaignListing.Read())
                                 {
-                                    CampaignDD.Items.Add(new ListItem(CampaignListing["Camp_DM"].ToString() + " - " + CampaignListing["Camp_Name"].ToString(), CampaignListing["Campaign_ID"].ToString()));
+                                    CampaignDD.Items.Add(new ListItem(CampaignListing["Campaign_DM"].ToString() + "; '" + CampaignListing["Campaign_Name"].ToString() + "'", 
+                                                                        CampaignListing["Campaign_ID"].ToString()));
+                                }
+                            }
+
+                            query.CommandText = "SELECT * FROM RPG WHERE RPG_ID = " + RPGDD.SelectedValue + ";";
+
+                            using (SQLiteDataReader LevelCap = query.ExecuteReader())
+                            {
+                                int cap = 0;
+
+                                if (LevelCap.Read())
+                                {
+                                    cap = int.Parse(LevelCap["RPG_Level_Cap"].ToString());
+                                }
+
+                                if (cap > 0)
+                                {
+                                    for (int i = 1; i <= cap; i++)
+                                    {
+                                        LevelDD.Items.Add(new ListItem(i.ToString(), i.ToString()));
+                                    }
+                                }
+                                else
+                                {
+                                    LevelDD.Items[0].Text = "N/A";
+                                    LevelDD.Enabled = false;
+                                }
+                            }
+
+                            query.CommandText = "SELECT * FROM CharacterRace JOIN RPGRace " +
+                                                "WHERE CharacterRace.Char_Race_ID = RPGRace.Char_Race_ID " +
+                                                "AND RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Char_Race_Name;";
+
+                            using (SQLiteDataReader RaceListing = query.ExecuteReader())
+                            {
+                                while (RaceListing.Read())
+                                {
+                                    RaceDD.Items.Add(new ListItem(RaceListing["Char_Race_Name"].ToString(), RaceListing["Char_Race_ID"].ToString()));
+                                }
+
+                                if (RaceDD.Items.Count < 2)
+                                {
+                                    RaceDD.Items[0].Text = "N/A";
+                                    RaceDD.Enabled = false;
+                                }
+                            }
+
+                            query.CommandText = "SELECT * FROM CharacterClass JOIN RPGClass " +
+                                                "WHERE CharacterClass.Char_Class_ID = RPGClass.Char_Class_ID " +
+                                                "AND RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Char_Class_Name;";
+
+                            using (SQLiteDataReader ClassListing = query.ExecuteReader())
+                            {
+                                while (ClassListing.Read())
+                                {
+                                    ClassDD.Items.Add(new ListItem(ClassListing["Char_Class_Name"].ToString(), ClassListing["Char_Class_ID"].ToString()));
+                                }
+
+                                if (ClassDD.Items.Count < 2)
+                                {
+                                    ClassDD.Items[0].Text = "N/A";
+                                    ClassDD.Enabled = false;
+                                }
+                            }
+
+                            query.CommandText = "SELECT * FROM CharacterAlign JOIN RPGAlign " +
+                                                "WHERE CharacterAlign.Char_Align_ID = RPGAlign.Char_Align_ID " +
+                                                "AND RPG_ID = " + RPGDD.SelectedValue + ";";
+
+                            using (SQLiteDataReader AlignListing = query.ExecuteReader())
+                            {
+                                while (AlignListing.Read())
+                                {
+                                    AlignDD.Items.Add(new ListItem(AlignListing["Char_Align_Name"].ToString(), AlignListing["Char_Align_ID"].ToString()));
+                                }
+
+                                if (AlignDD.Items.Count < 2)
+                                {
+                                    AlignDD.Items[0].Text = "N/A";
+                                    AlignDD.Enabled = false;
                                 }
                             }
 
@@ -201,24 +321,59 @@ namespace CharacterCreator
             }
         }
 
-        public void ResetStartMenu(object sender, CommandEventArgs e)
+        public void CampaignChanged(object sender, EventArgs e)
         {
-            NameTB.Text = "";
-            PlayerTB.Text = "";
-            DescTB.Text += "";
+            CampaignChanged();
+        }
 
-            if (CharTypeRBList.Items.Count > 0)
+        public void CampaignChanged()
+        {
+            Camp_NameTB.Text = "";
+            Camp_DMTB.Text = "";
+            Camp_TypeTB.Text = "";
+            Camp_DescTB.Text = "";
+            Camp_ExtraTB.Text = "";
+            
+            if (CampaignDD.SelectedIndex > 0)
             {
-                CharTypeRBList.SelectedIndex = 0;
-                CharTypeChanged();
-            }
+                try
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
+                    {
+                        conn.Open();
 
-            if (RPGDD.Items.Count > 0)
-            {
-                RPGDD.SelectedIndex = 0;
-            }
+                        using (SQLiteCommand query = conn.CreateCommand())
+                        {
+                            query.CommandText = "SELECT * FROM Campaign WHERE Campaign_ID = " + CampaignDD.SelectedValue + ";";
 
-            RPGChanged();
+                            using (SQLiteDataReader reader = query.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    Camp_NameTB.Text    = reader["Campaign_Name"].ToString();
+                                    Camp_DMTB.Text      = reader["Campaign_DM"].ToString();
+                                    Camp_TypeTB.Text    = reader["Campaign_Type"].ToString();
+                                    Camp_DescTB.Text    = reader["Campaign_Desc"].ToString();
+                                    Camp_ExtraTB.Text   = reader["Campaign_Extra"].ToString();
+                                }
+                            }
+                            
+                            query.Dispose();
+                        }
+
+                        conn.Close();
+                    }
+                }
+                catch (Exception err)
+                {
+                    DescTB.Text += err.ToString();
+                }
+            }
+        }
+
+        public void CancelChanges(object sender, CommandEventArgs e)
+        {
+            PopulateFields();
         }
 
         public bool CreationFieldCheck()
@@ -229,11 +384,19 @@ namespace CharacterCreator
             {
                 pass = false;
             }
-            else if (CharTypeRBList.Items.Count == 0)
+            else if (LevelDD.Items.Count > 1 && LevelDD.SelectedIndex < 1)
             {
                 pass = false;
             }
-            else if (RPGDD.Items.Count == 0)
+            else if (RaceDD.Items.Count > 1 && RaceDD.SelectedIndex < 1)
+            {
+                pass = false;
+            }
+            else if (ClassDD.Items.Count > 1 && ClassDD.SelectedIndex < 1)
+            {
+                pass = false;
+            }
+            else if (AlignDD.Items.Count > 1 && AlignDD.SelectedIndex < 1)
             {
                 pass = false;
             }
@@ -248,8 +411,9 @@ namespace CharacterCreator
                 if (CreationFieldCheck())
                 {
                     SaveMainDetails();
-                    SaveCommonDetails();
                     //SaveAbilityScores();
+
+                    Changes.Value = "";
                 }
             }
             catch (Exception err)
@@ -260,163 +424,40 @@ namespace CharacterCreator
 
         public void SaveMainDetails()
         {
+            DescTB.Text += "Attempting to Save...";
 
-        }
-        
-        public void SetCommonDetails()
-        {
-            Common_RaceDD.Items.Clear();
-            Common_ClassDD.Items.Clear();
-            Common_AlignDD.Items.Clear();
-
-            using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
+            if (Changes.Value.Length > 0)
             {
-                conn.Open();
-
-                using (SQLiteCommand query = conn.CreateCommand())
+                try
                 {
-                    query.CommandText = "SELECT * FROM CharacterRace JOIN RPGRace WHERE ";
-                    query.CommandText += "CharacterRace.Char_Race_ID = RPGRace.Char_Race_ID AND ";
-                    query.CommandText += "RPG_ID=" + RPGDD.SelectedIndex.ToString();
-
-                    using (SQLiteDataReader AlignRead = query.ExecuteReader())
+                    using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
                     {
-                        while (AlignRead.Read())
+                        conn.Open();
+
+                        using (SQLiteCommand query = conn.CreateCommand())
                         {
-                            Common_RaceDD.Items.Add(AlignRead["Char_Race_Name"].ToString());
-                        }
-                    }
+                            query.CommandText += "UPDATE Character SET ";
+                            query.CommandText += "Character_Name = '" + NameTB.Text + "' ";
+                            query.CommandText += "WHERE Character_ID = " + CharacterID.Value;
 
-                    query.CommandText = "SELECT * FROM CharacterClass JOIN RPGClass WHERE ";
-                    query.CommandText += "CharacterClass.Char_Class_ID = RPGClass.Char_Class_ID AND ";
-                    query.CommandText += "RPG_ID=" + RPGDD.SelectedIndex.ToString();
-
-                    using (SQLiteDataReader AlignRead = query.ExecuteReader())
-                    {
-                        while (AlignRead.Read())
-                        {
-                            Common_ClassDD.Items.Add(AlignRead["Char_Class_Name"].ToString());
-                        }
-                    }
-
-                    query.CommandText = "SELECT * FROM CharacterAlign JOIN RPGAlign WHERE ";
-                    query.CommandText += "CharacterAlign.Char_Align_ID = RPGAlign.Char_Align_ID AND ";
-                    query.CommandText += "RPG_ID=" + RPGDD.SelectedIndex.ToString();
-
-                    using (SQLiteDataReader AlignRead = query.ExecuteReader())
-                    {
-                        while(AlignRead.Read())
-                        {
-                            Common_AlignDD.Items.Add(AlignRead["Char_Align_Name"].ToString());
-                        }
-                    }
-
-                    /*
-                    if (devCharacter.commonInfo.id >= 0)
-                    {
-                        query.CommandText = "SELECT * FROM CharacterCommon WHERE Common_ID=" + devCharacter.commonInfo.id;
-
-                        using (SQLiteDataReader CommonRead = query.ExecuteReader())
-                        {
-                            Common_SexTB.Text = CommonRead["Char_Sex"].ToString();
-                            Common_LevelTB.Text = CommonRead["Char_Level"].ToString();
-                            Common_RaceDD.Text = CommonRead["Char_Race_ID"].ToString();
-                            Common_ClassDD.Text = CommonRead["Char_Class_ID"].ToString();
-                            Common_AlignDD.Text = CommonRead["Char_Align_ID"].ToString();
-                        }
-                    }
-                    */
-
-                    query.Dispose();
-                }
-
-                conn.Close();
-            }
-        }
-
-        public void SaveCommonDetails()
-        {
-            /*
-            using (SQLiteConnection conn = new SQLiteConnection("Data Source=|DataDirectory|/charDev.db;Version=3;"))
-            {
-                conn.Open();
-
-                using (SQLiteCommand query = conn.CreateCommand())
-                {
-                    if (devCharacter.commonInfo.id >= 0)
-                    {
-                        query.CommandText += "UPDATE CharacterCommon SET ";
-
-                        if (Common_SexTB.Text != devCharacter.commonInfo.charSex)
-                        {
-                            query.CommandText += "Char_Sex = '" + Common_SexTB.Text + "', ";
-                        }
-
-                        if (int.Parse(Common_LevelTB.Text) != devCharacter.commonInfo.level)
-                        {
-                            query.CommandText += "Char_Level = " + Common_LevelTB.Text + ", ";
-                        }
-
-                        if (Common_RaceDD.SelectedIndex + 1 != devCharacter.commonInfo.charRace.id)
-                        {
-                            query.CommandText += "Char_Race_ID = " + (Common_RaceDD.SelectedIndex + 1).ToString() + ", ";
-                        }
-
-                        if (Common_ClassDD.SelectedIndex + 1 != devCharacter.commonInfo.charClass.id)
-                        {
-                            query.CommandText += "Char_Class_ID = '" + (Common_ClassDD.SelectedIndex + 1).ToString() + "', ";
-                        }
-
-                        if (Common_AlignDD.SelectedIndex + 1 != devCharacter.commonInfo.charAlign.id)
-                        {
-                            query.CommandText += "Char_Align_ID = '" + (Common_AlignDD.SelectedIndex + 1).ToString() + "', ";
-                        }
-
-                        if (query.CommandText.Contains(","))
-                        {
-                            query.CommandText = query.CommandText.Substring(0, query.CommandText.LastIndexOf(","));
-                            
-                            query.CommandText += " WHERE Common_ID=" + devCharacter.commonInfo.id;
                             query.ExecuteNonQuery();
+                            query.Dispose();
                         }
+
+                        conn.Close();
                     }
-                    else
-                    {
-                        query.CommandText += "INSERT INTO CharacterCommon (";
-                        query.CommandText += "Char_Sex, ";
-                        query.CommandText += "Char_Level, ";
-                        query.CommandText += "Char_Race_ID, ";
-                        query.CommandText += "Char_Class_ID, ";
-                        query.CommandText += "Char_Align_ID, ";
-                        query.CommandText += "Character_ID";
-                        query.CommandText += ") VALUES (";
-                        query.CommandText += "@Sex, ";
-                        query.CommandText += "@Level, ";
-                        query.CommandText += "@Race, ";
-                        query.CommandText += "@Class, ";
-                        query.CommandText += "@Align, ";
-                        query.CommandText += "@CharID";
-                        query.CommandText += ");";
-
-                        query.Parameters.Add(new SQLiteParameter("@Sex",    Common_SexTB.Text));
-                        query.Parameters.Add(new SQLiteParameter("@Level",  Common_LevelTB.Text));
-                        query.Parameters.Add(new SQLiteParameter("@Race",   Common_RaceDD.SelectedIndex    + 1));
-                        query.Parameters.Add(new SQLiteParameter("@Class",  Common_ClassDD.SelectedIndex   + 1));
-                        query.Parameters.Add(new SQLiteParameter("@Align",  Common_AlignDD.SelectedIndex   + 1));
-                        //query.Parameters.Add(new SQLiteParameter("@CharID", devCharacter.id));
-
-                        query.ExecuteNonQuery();
-
-                        //devCharacter.commonInfo.id = (int)conn.LastInsertRowId;
-                        //CommonIDTB.Text = devCharacter.commonInfo.id.ToString();
-                    }
-
-                    query.Dispose();
+                }
+                catch (Exception err)
+                {
+                    DescTB.Text += err.ToString();
                 }
 
-                conn.Close();
+                DescTB.Text += "Save Complete!";
             }
-            */
+            else
+            {
+                DescTB.Text += "Save Failed!";
+            }
         }
         
         public void SetAbilityScores()
@@ -431,7 +472,7 @@ namespace CharacterCreator
 
                 using (SQLiteCommand query = conn.CreateCommand())
                 {
-                    query.CommandText += "SELECT * FROM RPG WHERE RPG_ID = " + RPGDD.SelectedIndex.ToString();
+                    query.CommandText += "SELECT * FROM RPG WHERE RPG_ID = " + RPGDD.SelectedValue;
 
                     using (SQLiteDataReader statType = query.ExecuteReader())
                     {

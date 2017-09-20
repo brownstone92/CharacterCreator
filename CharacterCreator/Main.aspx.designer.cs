@@ -22,13 +22,13 @@ namespace CharacterCreator {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// Character control.
+        /// CharacterID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField Character;
+        protected global::System.Web.UI.WebControls.HiddenField CharacterID;
         
         /// <summary>
         /// loadCharTable control.
@@ -58,13 +58,13 @@ namespace CharacterCreator {
         protected global::System.Web.UI.WebControls.DropDownList charListDD;
         
         /// <summary>
-        /// EditBtn control.
+        /// RefreshBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button EditBtn;
+        protected global::System.Web.UI.WebControls.LinkButton RefreshBtn;
         
         /// <summary>
         /// CopyBtn control.
@@ -74,15 +74,6 @@ namespace CharacterCreator {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button CopyBtn;
-        
-        /// <summary>
-        /// DeleteBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DeleteBtn;
         
         /// <summary>
         /// newCharTable control.
@@ -184,6 +175,96 @@ namespace CharacterCreator {
         protected global::System.Web.UI.WebControls.DropDownList CampaignDD;
         
         /// <summary>
+        /// LevelLB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LevelLB;
+        
+        /// <summary>
+        /// LevelDD control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList LevelDD;
+        
+        /// <summary>
+        /// RaceLB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RaceLB;
+        
+        /// <summary>
+        /// RaceDD control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList RaceDD;
+        
+        /// <summary>
+        /// ClassLB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ClassLB;
+        
+        /// <summary>
+        /// ClassDD control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ClassDD;
+        
+        /// <summary>
+        /// AlignLB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label AlignLB;
+        
+        /// <summary>
+        /// AlignDD control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList AlignDD;
+        
+        /// <summary>
+        /// SexLB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label SexLB;
+        
+        /// <summary>
+        /// SexTB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SexTB;
+        
+        /// <summary>
         /// DescLB control.
         /// </summary>
         /// <remarks>
@@ -202,22 +283,13 @@ namespace CharacterCreator {
         protected global::System.Web.UI.WebControls.TextBox DescTB;
         
         /// <summary>
-        /// NewCharBtn control.
+        /// EditBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button NewCharBtn;
-        
-        /// <summary>
-        /// RefreshBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton RefreshBtn;
+        protected global::System.Web.UI.WebControls.Button EditBtn;
         
         /// <summary>
         /// ClearBtn control.
