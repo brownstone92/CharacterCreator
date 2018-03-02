@@ -91,6 +91,7 @@
                                     <asp:TextBox ID="PlayerTB" runat="server" />
                                 </asp:TableCell>
                             </asp:TableRow>
+                            <!--
                             <asp:TableRow runat="server" CssClass="tableRow mandatoryField" BorderWidth="10px">
                                 <asp:TableCell runat="server" CssClass="fieldLabel">                
                                     <asp:Label ID="RPGLB" runat="server" Text="RPG:" />
@@ -99,6 +100,7 @@
                                     <asp:DropDownList ID="RPGDD" runat="server" />
                                 </asp:TableCell>
                             </asp:TableRow>
+                            -->
                             <asp:TableRow runat="server" CssClass="tableRow" BorderWidth="10px">
                                 <asp:TableCell runat="server" CssClass="fieldLabel">
                                     <asp:Label ID="CampaignLB" runat="server" Text="Current Campaign:" />

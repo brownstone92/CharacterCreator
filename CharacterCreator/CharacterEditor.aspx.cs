@@ -18,15 +18,17 @@ namespace CharacterCreator
             {
                 string rawId = Request.QueryString["id"];
                 CharacterID.Value = rawId;
-
-                PopulateMenu();
+                
                 PopulateFields();
+                EnterCharData();
 
                 CharTypeRBList.SelectedIndexChanged += new EventHandler(CharTypeChanged);
                 CharTypeRBList.AutoPostBack = true;
 
-                RPGDD.SelectedIndexChanged += new EventHandler(RPGChanged);
+                /*
+                RPGDD.SelectedIndexChanged += new EventHandler(SetRPG);
                 RPGDD.AutoPostBack = true;
+                */
 
                 CampaignDD.SelectedIndexChanged += new EventHandler(CampaignChanged);
                 CampaignDD.AutoPostBack = true;
@@ -40,18 +42,21 @@ namespace CharacterCreator
             }
         }
 
-        public void PopulateMenu(object sender, CommandEventArgs e)
+        public void PopulateFields(object sender, CommandEventArgs e)
         {
-            PopulateMenu();
+            PopulateFields();
         }
 
-        public void PopulateMenu()
+        public void PopulateFields()
         {
             CharTypeRBList.Items.Clear();
+
+            /*
             RPGDD.Items.Clear();
 
             RPGDD.Items.Add(new ListItem("", "0"));
-            RPGChanged();
+            SetRPG();
+            */
 
             try
             {
@@ -71,6 +76,7 @@ namespace CharacterCreator
                             }
                         }
 
+                        /*
                         query.CommandText = "SELECT * FROM RPG ORDER BY RPG_Name;";
 
                         using (SQLiteDataReader RPGRead = query.ExecuteReader())
@@ -80,7 +86,8 @@ namespace CharacterCreator
                                 RPGDD.Items.Add(new ListItem(RPGRead["RPG_Name"].ToString(), RPGRead["RPG_ID"].ToString()));
                             }
                         }
-                        
+                        */
+
                         query.Dispose();
                     }
 
@@ -93,7 +100,7 @@ namespace CharacterCreator
             }
         }
 
-        public void PopulateFields()
+        public void EnterCharData()
         {
             try
             {
@@ -118,8 +125,11 @@ namespace CharacterCreator
                                 CharTypeRBList.SelectedValue = reader["Char_Type_ID"].ToString();
                                 CharTypeChanged();
 
+                                /*
                                 RPGDD.SelectedValue = reader["RPG_ID"].ToString();
-                                RPGChanged();
+                                */
+
+                                SetRPG(int.Parse(reader["RPG_ID"].ToString()));
 
                                 if (reader["Character_Level"].ToString() != "")
                                 {
@@ -180,12 +190,14 @@ namespace CharacterCreator
             }
         }
 
-        public void RPGChanged(object sender, EventArgs e)
+        /*
+        public void SetRPG(object sender, EventArgs e)
         {
-            RPGChanged();
+            SetRPG();
         }
+        */
 
-        public void RPGChanged()
+        public void SetRPG(int rpgID)
         {
             CampaignDD.Items.Clear();
             LevelDD.Items.Clear();
@@ -204,7 +216,7 @@ namespace CharacterCreator
             ClassDD.Enabled = true;
             AlignDD.Enabled = true;
 
-            if (RPGDD.SelectedIndex > 0)
+            if (rpgID > 0)
             {
                 ListItem separator = new ListItem("------------");
                 separator.Attributes.Add("disabled", "true");
@@ -218,7 +230,7 @@ namespace CharacterCreator
 
                         using (SQLiteCommand query = conn.CreateCommand())
                         {
-                            query.CommandText = "SELECT * FROM Campaign WHERE RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Campaign_Name;";
+                            query.CommandText = "SELECT * FROM Campaign WHERE RPG_ID = " + rpgID.ToString() + " ORDER BY Campaign_Name;";
 
                             using (SQLiteDataReader CampaignListing = query.ExecuteReader())
                             {
@@ -229,7 +241,7 @@ namespace CharacterCreator
                                 }
                             }
 
-                            query.CommandText = "SELECT * FROM RPG WHERE RPG_ID = " + RPGDD.SelectedValue + ";";
+                            query.CommandText = "SELECT * FROM RPG WHERE RPG_ID = " + rpgID.ToString() + ";";
 
                             using (SQLiteDataReader LevelCap = query.ExecuteReader())
                             {
@@ -256,7 +268,7 @@ namespace CharacterCreator
 
                             query.CommandText = "SELECT * FROM CharacterRace JOIN RPGRace " +
                                                 "WHERE CharacterRace.Char_Race_ID = RPGRace.Char_Race_ID " +
-                                                "AND RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Char_Race_Name;";
+                                                "AND RPG_ID = " + rpgID.ToString() + " ORDER BY Char_Race_Name;";
 
                             using (SQLiteDataReader RaceListing = query.ExecuteReader())
                             {
@@ -274,7 +286,7 @@ namespace CharacterCreator
 
                             query.CommandText = "SELECT * FROM CharacterClass JOIN RPGClass " +
                                                 "WHERE CharacterClass.Char_Class_ID = RPGClass.Char_Class_ID " +
-                                                "AND RPG_ID = " + RPGDD.SelectedValue + " ORDER BY Char_Class_Name;";
+                                                "AND RPG_ID = " + rpgID.ToString() + " ORDER BY Char_Class_Name;";
 
                             using (SQLiteDataReader ClassListing = query.ExecuteReader())
                             {
@@ -292,7 +304,7 @@ namespace CharacterCreator
 
                             query.CommandText = "SELECT * FROM CharacterAlign JOIN RPGAlign " +
                                                 "WHERE CharacterAlign.Char_Align_ID = RPGAlign.Char_Align_ID " +
-                                                "AND RPG_ID = " + RPGDD.SelectedValue + ";";
+                                                "AND RPG_ID = " + rpgID.ToString() + ";";
 
                             using (SQLiteDataReader AlignListing = query.ExecuteReader())
                             {
@@ -373,7 +385,7 @@ namespace CharacterCreator
 
         public void CancelChanges(object sender, CommandEventArgs e)
         {
-            PopulateFields();
+            EnterCharData();
         }
 
         public bool CreationFieldCheck()
